@@ -1,18 +1,25 @@
-/*
- * gbers002_bzhan014_lab2_part2.c
- *
- * Created: 1/13/2019 5:30:28 PM
- * Author : Glenn
- */ 
+/*	Glenn Bersabe Email: Gbers002@ucr.edu
+ *  Bohan Zhang Email: Bzhan014@ucr.edu
+ *	Lab Section: 023
+ *	Assignment: Lab 2  Exercise 2
+ *	Exercise Description: Checks to see if pin A0 and A1 are of certain values. Sets B0 to respective value.
+ *	
+ *	I acknowledge all content contained herein, excluding template or example
+ *	code, is my own original work.
+ */
 
 #include <avr/io.h>
 
 
 int main(void)
 {
-    /* Replace with your application code */
+    DDRA = 0x00; PORTA = 0xFF; //Configure Port A to accept inputs
+	DDRC = 0xFF; PORTC = 0x00; //Configure Port C to read outputs
+	unsigned char cntavail;
     while (1) 
     {
+		cntavail = PINA;
+		PORTC = cntavail;
     }
 }
 

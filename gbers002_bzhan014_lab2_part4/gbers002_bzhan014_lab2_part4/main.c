@@ -1,7 +1,7 @@
 /*	Glenn Bersabe Email: Gbers002@ucr.edu
  *  Bohan Zhang Email: Bzhan014@ucr.edu
  *	Lab Section: 023
- *	Assignment: Lab 2  Exercise 3
+ *	Assignment: Lab 2  Exercise 4
  *	Exercise Description: Checks to see if pin A0 and A1 are of certain values. Sets B0 to respective value.
  *	
  *	I acknowledge all content contained herein, excluding template or example
@@ -17,23 +17,33 @@ int main(void)
 	DDRB = 0x00; PORTB = 0xFF;
 	DDRC = 0x00; PORTC = 0xFF;
 	DDRD = 0xFF; PORTD = 0x00;
-	unsigned short totalWeight;
-	unsigned short weightDiff;
+	unsigned char totalWeight;
+	unsigned char weightDiff;
+	unsigned char signal;
+	unsigned char weightA;
+	unsigned char weightB;
+	unsigned char weightC;
+	
     while (1) 
     {
-		totalWeight = (PINA + PINB + PINC);
-		weightDiff = abs((PINA - PINC));
+		signal = 0x00;
+		weightA = PINA;
+		weightB = PINB;
+		weightC = PINC;
 		
-		if (totalWeight > 0x8C && weightDiff > 0x50) {
-			PORTD = 0x03;
+		totalWeight = weightA + weightB + weightC;
+		weightDiff = abs(weightA - weightC);
+		
+		if (totalWeight > 140) {
+			signal = signal | 0x01;
 		}
-		else if (totalWeight > 0x8C) {
-			PORTD = 0x01;
-		}
-		else if (weightDiff > 0x50) {
-			PORTD = 0x02;
+		if (weightDiff > 80) {
+			signal = signal | 0x02;
 		}
 
+		totalWeight = totalWeight & 0xFC;
+		//weightDiff += totalWeight;
+		PORTD = totalWeight | signal;
     }
 }
 

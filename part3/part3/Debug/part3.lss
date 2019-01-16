@@ -1,31 +1,31 @@
 
-gbers002_bzhan014_lab2_part2.elf:     file format elf32-avr
+part3.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  0000012c  2**0
+  0 .data         00000000  00800100  00800100  0000015e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000d8  00000000  00000000  00000054  2**1
+  1 .text         0000010a  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  0000012c  2**0
+  2 .comment      00000030  00000000  00000000  0000015e  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  0000015c  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000190  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000020  00000000  00000000  0000019c  2**0
+  4 .debug_aranges 00000020  00000000  00000000  000001d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000868  00000000  00000000  000001bc  2**0
+  5 .debug_info   000008ac  00000000  00000000  000001f0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000079d  00000000  00000000  00000a24  2**0
+  6 .debug_abbrev 00000797  00000000  00000000  00000a9c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000250  00000000  00000000  000011c1  2**0
+  7 .debug_line   000002a2  00000000  00000000  00001233  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000024  00000000  00000000  00001414  2**2
+  8 .debug_frame  00000024  00000000  00000000  000014d8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000423  00000000  00000000  00001438  2**0
+  9 .debug_str    0000040d  00000000  00000000  000014fc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000032  00000000  00000000  0000185b  2**0
+ 10 .debug_loc    0000012a  00000000  00000000  00001909  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000010  00000000  00000000  0000188d  2**0
+ 11 .debug_ranges 00000010  00000000  00000000  00001a33  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -110,86 +110,137 @@ Disassembly of section .text:
   94:	de bf       	out	0x3e, r29	; 62
   96:	cd bf       	out	0x3d, r28	; 61
   98:	02 d0       	rcall	.+4      	; 0x9e <main>
-  9a:	1c c0       	rjmp	.+56     	; 0xd4 <_exit>
+  9a:	35 c0       	rjmp	.+106    	; 0x106 <_exit>
 
 0000009c <__bad_interrupt>:
   9c:	b1 cf       	rjmp	.-158    	; 0x0 <__vectors>
 
 0000009e <main>:
-#include <avr/io.h>
 
 
 int main(void)
 {
-    DDRA = 0x00; PORTA = 0xFF; //Configure Port A to accept inputs
+	/* Replace with your application code */
+	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
   9e:	11 b8       	out	0x01, r1	; 1
   a0:	8f ef       	ldi	r24, 0xFF	; 255
   a2:	82 b9       	out	0x02, r24	; 2
-	DDRC = 0xFF; PORTC = 0x00; //Configure Port C to read outputs
-  a4:	87 b9       	out	0x07, r24	; 7
-  a6:	18 b8       	out	0x08, r1	; 8
-			cntavail++;
+	DDRC = 0x00; PORTC = 0xFF; // Configure port C's 8 pins as outputs, initialize to 0s
+  a4:	17 b8       	out	0x07, r1	; 7
+  a6:	88 b9       	out	0x08, r24	; 8
+		// 3) Write output
+		if (cntavail <= 7){
+			PORTC = 8 - cntavail;
 		}
-		if (tmpA3 == 0x08) {
-			cntavail++;
+		else {
+			PORTC = 128;
+  a8:	a0 e8       	ldi	r26, 0x80	; 128
+		if (tmpA7 == 0x80) {
+			cntavail ++;
 		}
-		PORTC = 4 - cntavail;
-  a8:	54 e0       	ldi	r21, 0x04	; 4
-	unsigned char tmpA3;
-	unsigned char cntavail;
-    while (1) 
-    {
-		cntavail = 0x00;
+		// 3) Write output
+		if (cntavail <= 7){
+			PORTC = 8 - cntavail;
+  aa:	f8 e0       	ldi	r31, 0x08	; 8
+	unsigned char tmpA6 = 0x00;
+	unsigned char tmpA7 = 0x00;
+	while(1)
+	{
+		unsigned char cntavail = 0x00;
 		tmpA0 = PINA & 0x01;
-  aa:	40 b1       	in	r20, 0x00	; 0
+  ac:	e0 b1       	in	r30, 0x00	; 0
 		tmpA1 = PINA & 0x02;
-  ac:	30 b1       	in	r19, 0x00	; 0
+  ae:	70 b1       	in	r23, 0x00	; 0
 		tmpA2 = PINA & 0x04;
-  ae:	20 b1       	in	r18, 0x00	; 0
-  b0:	24 70       	andi	r18, 0x04	; 4
+  b0:	60 b1       	in	r22, 0x00	; 0
+  b2:	64 70       	andi	r22, 0x04	; 4
 		tmpA3 = PINA & 0x08;
-  b2:	90 b1       	in	r25, 0x00	; 0
-  b4:	98 70       	andi	r25, 0x08	; 8
-	unsigned char tmpA2;
-	unsigned char tmpA3;
-	unsigned char cntavail;
-    while (1) 
-    {
-		cntavail = 0x00;
-  b6:	81 e0       	ldi	r24, 0x01	; 1
-  b8:	40 ff       	sbrs	r20, 0
-  ba:	80 e0       	ldi	r24, 0x00	; 0
-		tmpA3 = PINA & 0x08;
-		
+  b4:	50 b1       	in	r21, 0x00	; 0
+  b6:	58 70       	andi	r21, 0x08	; 8
+		tmpA4 = PINA & 0x10;
+  b8:	40 b1       	in	r20, 0x00	; 0
+  ba:	40 71       	andi	r20, 0x10	; 16
+		tmpA5 = PINA & 0x20;
+  bc:	30 b1       	in	r19, 0x00	; 0
+  be:	30 72       	andi	r19, 0x20	; 32
+		tmpA6 = PINA & 0x40;
+  c0:	20 b1       	in	r18, 0x00	; 0
+  c2:	20 74       	andi	r18, 0x40	; 64
+		tmpA7 = PINA & 0x80;
+  c4:	90 b1       	in	r25, 0x00	; 0
+  c6:	90 78       	andi	r25, 0x80	; 128
+	unsigned char tmpA5 = 0x00;
+	unsigned char tmpA6 = 0x00;
+	unsigned char tmpA7 = 0x00;
+	while(1)
+	{
+		unsigned char cntavail = 0x00;
+  c8:	81 e0       	ldi	r24, 0x01	; 1
+  ca:	e0 ff       	sbrs	r30, 0
+  cc:	80 e0       	ldi	r24, 0x00	; 0
+		tmpA6 = PINA & 0x40;
+		tmpA7 = PINA & 0x80;
 		if (tmpA0 == 0x01) {
-			cntavail++;
+			cntavail ++;
 		}
 		if (tmpA1 == 0x02) {
-  bc:	31 fd       	sbrc	r19, 1
-			cntavail++;
-  be:	8f 5f       	subi	r24, 0xFF	; 255
+  ce:	71 fd       	sbrc	r23, 1
+			cntavail ++;
+  d0:	8f 5f       	subi	r24, 0xFF	; 255
 		}
 		if (tmpA2 == 0x04) {
-  c0:	24 30       	cpi	r18, 0x04	; 4
-  c2:	09 f4       	brne	.+2      	; 0xc6 <main+0x28>
-			cntavail++;
-  c4:	8f 5f       	subi	r24, 0xFF	; 255
+  d2:	64 30       	cpi	r22, 0x04	; 4
+  d4:	09 f4       	brne	.+2      	; 0xd8 <main+0x3a>
+			cntavail ++;
+  d6:	8f 5f       	subi	r24, 0xFF	; 255
 		}
 		if (tmpA3 == 0x08) {
-  c6:	98 30       	cpi	r25, 0x08	; 8
-  c8:	09 f4       	brne	.+2      	; 0xcc <main+0x2e>
-			cntavail++;
-  ca:	8f 5f       	subi	r24, 0xFF	; 255
+  d8:	58 30       	cpi	r21, 0x08	; 8
+  da:	09 f4       	brne	.+2      	; 0xde <main+0x40>
+			cntavail ++;
+  dc:	8f 5f       	subi	r24, 0xFF	; 255
 		}
-		PORTC = 4 - cntavail;
-  cc:	95 2f       	mov	r25, r21
-  ce:	98 1b       	sub	r25, r24
-  d0:	98 b9       	out	0x08, r25	; 8
-    }
-  d2:	eb cf       	rjmp	.-42     	; 0xaa <main+0xc>
+		if (tmpA4 == 0x10) {
+  de:	40 31       	cpi	r20, 0x10	; 16
+  e0:	09 f4       	brne	.+2      	; 0xe4 <main+0x46>
+			cntavail ++;
+  e2:	8f 5f       	subi	r24, 0xFF	; 255
+		}
+		if (tmpA5 == 0x20) {
+  e4:	30 32       	cpi	r19, 0x20	; 32
+  e6:	09 f4       	brne	.+2      	; 0xea <main+0x4c>
+			cntavail ++;
+  e8:	8f 5f       	subi	r24, 0xFF	; 255
+		}
+		if (tmpA6 == 0x40) {
+  ea:	20 34       	cpi	r18, 0x40	; 64
+  ec:	09 f4       	brne	.+2      	; 0xf0 <main+0x52>
+			cntavail ++;
+  ee:	8f 5f       	subi	r24, 0xFF	; 255
+		}
+		if (tmpA7 == 0x80) {
+  f0:	90 38       	cpi	r25, 0x80	; 128
+  f2:	09 f4       	brne	.+2      	; 0xf6 <main+0x58>
+			cntavail ++;
+  f4:	8f 5f       	subi	r24, 0xFF	; 255
+		}
+		// 3) Write output
+		if (cntavail <= 7){
+  f6:	88 30       	cpi	r24, 0x08	; 8
+  f8:	20 f4       	brcc	.+8      	; 0x102 <main+0x64>
+			PORTC = 8 - cntavail;
+  fa:	9f 2f       	mov	r25, r31
+  fc:	98 1b       	sub	r25, r24
+  fe:	98 b9       	out	0x08, r25	; 8
+ 100:	d5 cf       	rjmp	.-86     	; 0xac <main+0xe>
+		}
+		else {
+			PORTC = 128;
+ 102:	a8 b9       	out	0x08, r26	; 8
+ 104:	d3 cf       	rjmp	.-90     	; 0xac <main+0xe>
 
-000000d4 <_exit>:
-  d4:	f8 94       	cli
+00000106 <_exit>:
+ 106:	f8 94       	cli
 
-000000d6 <__stop_program>:
-  d6:	ff cf       	rjmp	.-2      	; 0xd6 <__stop_program>
+00000108 <__stop_program>:
+ 108:	ff cf       	rjmp	.-2      	; 0x108 <__stop_program>

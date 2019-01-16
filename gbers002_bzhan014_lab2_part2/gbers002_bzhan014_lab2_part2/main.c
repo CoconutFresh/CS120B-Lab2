@@ -15,11 +15,32 @@ int main(void)
 {
     DDRA = 0x00; PORTA = 0xFF; //Configure Port A to accept inputs
 	DDRC = 0xFF; PORTC = 0x00; //Configure Port C to read outputs
+	unsigned char tmpA0;
+	unsigned char tmpA1;
+	unsigned char tmpA2;
+	unsigned char tmpA3;
 	unsigned char cntavail;
     while (1) 
     {
-		cntavail = PINA;
-		PORTC = cntavail;
+		cntavail = 0x00;
+		tmpA0 = PINA & 0x01;
+		tmpA1 = PINA & 0x02;
+		tmpA2 = PINA & 0x04;
+		tmpA3 = PINA & 0x08;
+		
+		if (tmpA0 == 0x01) {
+			cntavail++;
+		}
+		if (tmpA1 == 0x02) {
+			cntavail++;
+		}
+		if (tmpA2 == 0x04) {
+			cntavail++;
+		}
+		if (tmpA3 == 0x08) {
+			cntavail++;
+		}
+		PORTC = 4 - cntavail;
     }
 }
 
